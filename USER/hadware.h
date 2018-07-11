@@ -1,8 +1,8 @@
 #ifndef  __BSP_HADWARE
 #define  __BSP_HADWARE
 
-#define  Hadware_version1 	 //PCB版本1.1	
-//#define  Hadware_version2  //PCB版本1.2
+//#define  Hadware_version1 	 //PCB版本1.1	
+#define  Hadware_version2  //PCB版本1.2
 void bsp_init(void);
 #include "can.h"
 #include "led.h"

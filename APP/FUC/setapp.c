@@ -321,11 +321,13 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate14[] = {
   { TEXT_CreateIndirect,     "程序版本:",       ID_TEXT_APP03,  XPOS0-XPOS_T6,  YPOS0+YGAPS*3,  150,  30, TEXT_CF_LEFT },
 	{ TEXT_CreateIndirect,     "ICD模型版本:",    ID_TEXT_APP03,  XPOS0-XPOS_T6,  YPOS0+YGAPS*4,  150,  30, TEXT_CF_LEFT },
 	{ TEXT_CreateIndirect,     "CID模型版本:",    ID_TEXT_APP03,  XPOS0-XPOS_T6,  YPOS0+YGAPS*5,  150,  30, TEXT_CF_LEFT },
+	{ TEXT_CreateIndirect,     "",    ID_TEXT_APP09,  XPOS0-XPOS_T6,  YPOS0+YGAPS*6,  150,  30, TEXT_CF_LEFT },
 	{ TEXT_CreateIndirect,     "FH-1100-G-JPQ" ,  			ID_TEXT_APP03,  XPOS0,        	YPOS0+YGAPS*(-1),  180,  30, TEXT_CF_LEFT },
 	{ TEXT_CreateIndirect,     "2017-01-21" ,         ID_TEXT_APP05,  XPOS0,        	YPOS0+YGAPS*2,  150,  30, TEXT_CF_LEFT },
 	{ TEXT_CreateIndirect,     "Ver1.0  校验码8286" , ID_TEXT_APP06,  XPOS0,        	YPOS0+YGAPS*3,  270,  30, TEXT_CF_LEFT }, 
 	{ TEXT_CreateIndirect,     "Ver1.0  校验码345f" , ID_TEXT_APP07,  XPOS0,        	YPOS0+YGAPS*4,  270,  30, TEXT_CF_LEFT },
 	{ TEXT_CreateIndirect,     "Ver1.0  校验码345f" , ID_TEXT_APP08,  XPOS0,        	YPOS0+YGAPS*5,  270,  30, TEXT_CF_LEFT },
+	{ TEXT_CreateIndirect,     "" , ID_TEXT_APP10,  XPOS0,        	YPOS0+YGAPS*6,  350,  30, TEXT_CF_LEFT },
 	
 	{ TEXT_CreateIndirect,     "" , ID_TEXT_APP11,  XPOS0,YPOS0+YGAPS*0, 200, RECTY, TEXT_CF_LEFT },
 	{ TEXT_CreateIndirect,     "" , ID_TEXT_APP12,  XPOS0,YPOS0+YGAPS*1, 200, RECTY, TEXT_CF_LEFT },
@@ -337,6 +339,7 @@ static const GUI_WIDGET_CREATE_INFO _aDialogCreate14[] = {
   { EDIT_CreateIndirect,     NULL,     ID_EDIT_APP03,  XPOS0+XGAPS*0,YPOS0+YGAPS*1,    50, RECTY,  TEXT_CF_VCENTER, 4 },
   { EDIT_CreateIndirect,     NULL,     ID_EDIT_APP04,  XPOS0+XGAPS*1+10,YPOS0+YGAPS*1, 28, RECTY,  TEXT_CF_VCENTER, 2 },
   { EDIT_CreateIndirect,     NULL,     ID_EDIT_APP05,  XPOS0+XGAPS*2,YPOS0+YGAPS*1,    28, RECTY,  TEXT_CF_VCENTER, 2 },
+	
 	
 	{ TEXT_CreateIndirect,     "",   			ID_TEXT_APP04,  XPOS0-XPOS_T6,  YPOS0+YGAPS*7-2,  600,  36, TEXT_CF_LEFT },
 	

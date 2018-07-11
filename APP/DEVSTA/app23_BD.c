@@ -6,12 +6,22 @@ extern GUI_CONST_STORAGE GUI_BITMAP bmright;
 extern uint8_t	s_ucSelIconIndex2;
 #define BUF_S_LEN 36
 
+const char *cmodel_str_tlb[] = {
+"未知",
+"UBLOX",
+"泰斗",
+"华景世联",
+"威科姆",
+"备用1",
+"备用2",
+};
+
 static void Showsta(WM_MESSAGE * pMsg)
 {
 	int i =0;
 	char tbuf[BUF_S_LEN]={0};
 	DEV_STA	 		bds_sta_synch,bds_sta_module,bds_dif_sign,bds_sta_signal,bds_LS_come,bds_LS_sign;
-	u8    	bds_sta_ant;
+	u8    	bds_sta_ant,bds_cmodel;
 	u8 			bds_num_capture,bds_time_valid;
 	u32 		bds_dif_s,bds_dif_ns;
 	
@@ -22,7 +32,8 @@ static void Showsta(WM_MESSAGE * pMsg)
 
 	bds_sta_signal				=		(DEV_STA)(CAN1_RX0_BUF[T1_OFFSET+4]&0x01);							//北斗源信号状态	
 	bds_sta_synch					=		(DEV_STA)((CAN1_RX0_BUF[T1_OFFSET+4]&0x02)>>1);					//北斗源同步状态	
-	bds_time_valid				=		(DEV_STA)((CAN1_RX0_BUF[T1_OFFSET+4]&0x04)>>2);					//北斗源时间连续状态 
+	bds_time_valid				=		(DEV_STA)((CAN1_RX0_BUF[T1_OFFSET+4]&0x04)>>2);					//北斗源时间连续状态
+  bds_cmodel            =   CAN1_RX0_BUF[T1_OFFSET+5]&0xf;													//北斗模块类型
 	bds_sta_module				=		(DEV_STA)((CAN1_RX0_BUF[T1_OFFSET+3]&0x10)>>3);					//北斗源模块状态
 	bds_sta_ant						=		CAN1_RX0_BUF[T1_OFFSET+3]&0xf;													//北斗源天线状态
 	bds_num_capture				=		(CAN1_RX0_BUF[T1_OFFSET+2]&0xf0)>>4;										//北斗源卫星捕获数量
@@ -102,14 +113,25 @@ static void Showsta(WM_MESSAGE * pMsg)
 			TEXT_SetText(WM_GetDialogItem(pMsg->hWin, ID_TEXT_APP10+(i++)),"开路");
 				/*
 		-------------------------2模块状态-----------------------------------------------------------------------------*/
-		if(bds_sta_module==STA_OK)	
-			TEXT_SetText(WM_GetDialogItem(pMsg->hWin, ID_TEXT_APP10+(i++)),"正常");
-		else 
-		  TEXT_SetText(WM_GetDialogItem(pMsg->hWin, ID_TEXT_APP10+(i++)),"异常");
 		
+		if( DevSys.USER_Right == 1 ){
+			if(bds_sta_module==STA_OK)	
+				sprintf( (char*)(tbuf),"正常，模块型号（%s）",cmodel_str_tlb[bds_cmodel]);
+			else 
+				sprintf( (char*)(tbuf),"异常，模块型号（%s）",cmodel_str_tlb[bds_cmodel]);
+		}
+		else{
+		 if(bds_sta_module==STA_OK)	
+				sprintf( (char*)(tbuf),"正常");
+			else 
+				sprintf( (char*)(tbuf),"异常");
+		 
+		}
+		TEXT_SetText(WM_GetDialogItem(pMsg->hWin, ID_TEXT_APP10+(i++)),tbuf);
+			
 			/*
 		-------------------------3卫星颗数-----------------------------------------------------------------------------*/
-		//memset(tbuf,0,BUF_S_LEN);
+		memset(tbuf,0,BUF_S_LEN);
 		sprintf( (char*)(tbuf),"%02d颗",bds_num_capture);
 		TEXT_SetText(WM_GetDialogItem(pMsg->hWin, ID_TEXT_APP10+(i++)),tbuf);
 		

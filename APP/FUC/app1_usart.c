@@ -21,7 +21,9 @@ static void REC_Handler_APP01(WM_MESSAGE * pMsg)
 		data[1]	=	CAN1_RX1_BUF[S2_OFFSET+2]&0xf;
 		data[2]	=	(CAN1_RX1_BUF[S2_OFFSET+2]&0xf0)>>4;
 		data[3]	=	CAN1_RX1_BUF[S2_OFFSET+4]&0xf;  //IRIG-B2
-		data[4]	=	CAN1_RX1_BUF[S2_OFFSET+5]&0xf;  //IRIG-B2
+		//偷懒，直接MOD了一下数据
+		data[4] = data[3]>>2;
+		data[3] = data[3]&0x3;
 		
 		hItem = WM_GetDialogItem(pMsg->hWin, ID_DROPDOWN_APP0);
 		DROPDOWN_SetSel(hItem,data[0]) ;
@@ -72,7 +74,7 @@ void CAN_SEND_APP01(WM_MESSAGE * pMsg,uint8_t rtr)
 		msg[1]= 0x0;
 		msg[2]= (p[2]<<4) | p[1];
 		msg[3]= p[0];
-		msg[4]= p[3];
+		msg[4]= p[3]&0x3;
 		
 		if( DevSys.USER_Right == 1 )//高级用户
 		{
@@ -82,7 +84,9 @@ void CAN_SEND_APP01(WM_MESSAGE * pMsg,uint8_t rtr)
 		else{
 			msg[5]=CAN1_RX1_BUF[S2_OFFSET+5]&0xf;
 		}
-		
+		//偷懒，直接MOD了一下数据
+		msg[4] |= (msg[5]&0x1)<<2 ;
+		msg[5] = 0;
 		can_err=CAN1_Send_Msg(msg,send_id,8);
 		//myprintf("CAN_SEND:串口设置/n");
 	}

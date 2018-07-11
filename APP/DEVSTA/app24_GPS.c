@@ -5,6 +5,7 @@ extern GUI_CONST_STORAGE GUI_BITMAP bmleft;
 extern GUI_CONST_STORAGE GUI_BITMAP bmright;
 extern uint8_t	s_ucSelIconIndex2;
 #define BUF_S_LEN 36
+extern const char *cmodel_str_tlb[];
 
 static void Showsta(WM_MESSAGE * pMsg)
 {
@@ -12,7 +13,7 @@ static void Showsta(WM_MESSAGE * pMsg)
 	char tbuf[BUF_S_LEN]={0};
 		DEV_STA	 			gps_sta_synch,gps_sta_module,gps_dif_sign,gps_sta_signal,gps_LS_come,gps_LS_sign,gps_time_valid;
 	enum Ant_DEV_STA		gps_sta_ant;
-	u8 			gps_num_capture;
+	u8 			gps_num_capture,gps_cmodel;
 	u32 		gps_dif_s,gps_dif_ns;
 	u8 		  latitude[12],longitude[12],high[12],j,E3=0;		
 	u32     I_Lat=0,I_Lon=0,I_Hig=0,D_Lat=0,D_Lon=0,D_Hig=0;
@@ -21,7 +22,9 @@ static void Showsta(WM_MESSAGE * pMsg)
 	gps_sta_signal				=		(DEV_STA)(CAN1_RX0_BUF[T2_OFFSET+4]&0x01);							//GPS源信号状态	
 	gps_sta_synch					=		(DEV_STA)((CAN1_RX0_BUF[T2_OFFSET+4]&0x02)>>1);					//GPS源同步状态
 	gps_time_valid				=		(DEV_STA)((CAN1_RX0_BUF[T2_OFFSET+4]&0x04)>>2);					//GPS源时间连续状态
+	gps_cmodel            =   CAN1_RX0_BUF[T2_OFFSET+5]&0xf;													//GPS模块类型
 	gps_sta_module				=		(DEV_STA)((CAN1_RX0_BUF[T2_OFFSET+3]&0x10)>>3);					//GPS源模块状态
+	
 	gps_num_capture				=		(CAN1_RX0_BUF[T2_OFFSET+2]&0xf0)>>4;											//GPS源卫星捕获数量
 	gps_sta_ant						=		(enum Ant_DEV_STA)(CAN1_RX0_BUF[T2_OFFSET+3]&0xf);			//GPS源天线状态
 	//offset2=T2_OFFSET+32;	
@@ -104,11 +107,21 @@ static void Showsta(WM_MESSAGE * pMsg)
 			TEXT_SetText(WM_GetDialogItem(pMsg->hWin, ID_TEXT_APP10+(i++)),"开路");
 				/*
 		-------------------------1模块状态-----------------------------------------------------------------------------*/
-		if(gps_sta_module==STA_OK)	
-			TEXT_SetText(WM_GetDialogItem(pMsg->hWin, ID_TEXT_APP10+(i++)),"正常");
-		else 
-		  TEXT_SetText(WM_GetDialogItem(pMsg->hWin, ID_TEXT_APP10+(i++)),"异常");
-		
+		if( DevSys.USER_Right == 1 ){
+				if(gps_sta_module==STA_OK)	
+					sprintf( (char*)(tbuf),"正常，模块型号（%s）",cmodel_str_tlb[gps_cmodel]);
+				else 
+					sprintf( (char*)(tbuf),"异常，模块型号（%s）",cmodel_str_tlb[gps_cmodel]);
+			}
+		else{
+			 if(gps_sta_module==STA_OK)	
+					sprintf( (char*)(tbuf),"正常");
+				else 
+					sprintf( (char*)(tbuf),"异常");
+			 
+			}
+			TEXT_SetText(WM_GetDialogItem(pMsg->hWin, ID_TEXT_APP10+(i++)),tbuf);
+			
 			/*
 		-------------------------2卫星颗数-----------------------------------------------------------------------------*/
 		//memset(tbuf,0,BUF_S_LEN);

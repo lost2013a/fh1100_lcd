@@ -17,8 +17,12 @@ static void REC_Handler_APP00(WM_MESSAGE * pMsg)
 		//myprintf("CAN_REC :主从设置/n");
 		data[0]  = CAN1_RX1_BUF[SETSYSMODE_OFFSET];
 		data[1]  = CAN1_RX1_BUF[SETSYSMODE_OFFSET+1];
-		data[2]  = CAN1_RX1_BUF[SETSYSMODE_OFFSET+2];
-		data[3]  = CAN1_RX1_BUF[SETSYSMODE_OFFSET+3];
+		//偷懒，直接MOD了一下数据
+		data[2] = data[1];
+		data[1] = data[0]&0xf;
+		data[0] = data[0]>>4;
+		data[3] = data[2]&0xf;
+		data[2] = data[2]>>4;
 		hItem = WM_GetDialogItem(pMsg->hWin, ID_DROPDOWN_APP0);
 		DROPDOWN_SetSel(hItem,data[0]);
 		if( DevSys.USER_Right == 1)//高级用户
@@ -69,6 +73,10 @@ void CAN_SEND_APP00(WM_MESSAGE * pMsg,uint8_t rtr)
 			msg[2]=CAN1_RX1_BUF[SETSYSMODE_OFFSET+2];
 			msg[3]=CAN1_RX1_BUF[SETSYSMODE_OFFSET+3];
 		}
+		
+		//偷懒，直接MOD了一下数据
+		msg[0] = ((msg[0]&0xf)<<4) | (msg[1]&0xf);
+		msg[1] = ((msg[2]&0xf)<<4) | (msg[3]&0xf);
 		can_err=CAN1_Send_Msg(msg,send_id,8);
 		//myprintf("CAN_SEND:主从设置/n");
 	}

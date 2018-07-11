@@ -119,7 +119,7 @@ void _cbCallback14(WM_MESSAGE * pMsg)
 				}
         break;
     case WM_INIT_DIALOG:
-			 
+			
 			//布置标题栏
        PAINTWIN_SETAPP(pMsg);
 		  //布置下拉框
@@ -127,11 +127,38 @@ void _cbCallback14(WM_MESSAGE * pMsg)
       hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_APP04);  
 			TEXT_SetFont(hItem, &GUI_FontHZ16);
 			if( DevSys.USER_Right == 1 ){
+				u16 year;
+				u8 mon,day,type,buf[2];
+				char tbuf[20] = {0};
 				hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_APP01);  
 				TEXT_SetText(hItem,"装置界面软件日期" );
 				hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_APP02);  
 				TEXT_SetText(hItem,BDTIMEBUF );
+				hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_APP09);  
+				TEXT_SetText(hItem,"FPGA程序版本" );
+				
+				
+				buf[0]  =   CAN1_RX0_BUF[T1_OFFSET+6];		
+				buf[1]  = 	CAN1_RX0_BUF[T1_OFFSET+7];
+				year  = (buf[0]>>2) +2000;
+				mon   = ((buf[0]&0x3)<<2)|buf[1]>>6;
+				day   = (buf[1]&0x3e)>>1;
+				type	= buf[1]&0x1;
+				
+				if(year>=2018){
+					 if(type)
+							sprintf((char*)tbuf,"%04d年%02d月%02d日/南网",year,mon,day);	
+						else
+							sprintf((char*)tbuf,"%04d年%02d月%02d日/国网",year,mon,day);	
+			
+				}
+				else{
+					sprintf((char*)tbuf,"FPGA程序版本太低，请升级");	
+				}
+					hItem = WM_GetDialogItem(pMsg->hWin, ID_TEXT_APP10);  
+				TEXT_SetText(hItem,(char*)tbuf );
 			}
+			
 		
        //布置EDIT框
       FLASH_Read(FLASH_SAVE_ADDR1,readbuff,3);//读出信息到readflash中
